@@ -1,0 +1,134 @@
+[sexta-feira 16:54] Julio Cezar Branco Andrade
+Sub depositoA_vista()
+ 
+Dim wb_3 As Object
+
+Dim wz_3 As Worksheet
+
+Dim ws_3 As Worksheet
+ 
+Dim ultimaLinhaZZ As Long
+
+Dim aux_3 As Integer
+ 
+ 
+    ' Desativar atualizações para melhorar o desempenho
+
+    Application.ScreenUpdating = False
+
+    Application.Calculation = xlCalculationManual
+ 
+    ' Verificar se a planilha "ggscco_4" está aberta
+
+    On Error Resume Next
+
+    Set wb_3 = Workbooks("ggscco_4.xlsx")
+
+    On Error GoTo 0
+
+    caminhoArquivo_3 = "R:\Controles Internos\Projeto Liquidez\JC\ggscco_4.xlsx"
+
+    ' Se a planilha não estiver aberta, abrir
+
+    If wb_3 Is Nothing Then
+
+        Set wb_3 = Workbooks.Open(caminhoArquivo_3)
+
+    End If
+ 
+    ' Definir a planilha ativa como "ggscco_4"
+
+    Set wz_3 = wb_3.Sheets("ggscco_4.rpt")
+
+    'CHATGPT
+
+    ' Copiar a aba "ggscco_4.rpt" para uma nova aba chamada "D_menos_1"
+
+    wz_3.Copy Before:=wb_3.Sheets(1)
+
+    Set ws_3 = wb_3.Sheets(1)
+
+    ws_3.Name = "D-0"
+
+
+    ' Adicionar uma coluna à direita com o nome "data vencimento"
+
+    Dim ultimaColuna As Long
+
+    ultimaColuna = ws_3.Cells(1, Columns.Count).End(xlToLeft).Column
+
+    ws_3.Cells(1, ultimaColuna + 1).Value = "data vencimento"
+
+    ultimaLinhaZZ = ws_3.Cells(ws_3.Rows.Count, "A").End(xlUp).Row
+
+aux_3 = 2
+
+While aux_3 <= ultimaLinhaZZ
+
+    If Cells(aux_3, 11) = "" Then
+
+        Cells(aux_3, 11).NumberFormat = "DD/MM/YYYY"
+
+        Cells(aux_3, 11).FormulaR1C1 = "=TODAY()"
+
+    End If
+
+    aux_3 = aux_3 + 1
+ 
+Wend
+ 
+' Copiar a aba "ggscco_4.rpt" para uma nova aba chamada "D_menos_1"
+
+    wz_3.Copy Before:=wb_3.Sheets(1)
+
+    Set ws_3 = wb_3.Sheets(1)
+
+    ws_3.Name = "D-1"
+ 
+' Adicionar uma coluna à direita com o nome "data vencimento"
+
+    Dim ultimaColuna_2 As Long
+
+    ultimaColuna_2 = ws_3.Cells(1, Columns.Count).End(xlToLeft).Column
+
+    ws_3.Cells(1, ultimaColuna_2 + 1).Value = "data vencimento"
+
+aux_3 = 2
+
+While aux_3 <= ultimaLinhaZZ
+
+    If Cells(aux_3, 11) = "" Then
+
+        Cells(aux_3, 4).Value = 0
+
+        Cells(aux_3, 11).NumberFormat = "DD/MM/YYYY"
+
+        Cells(aux_3, 11).FormulaR1C1 = "=WORKDAY(TODAY(),-1,[Macro_JULIO_v1.xlsm]Feriados!feriados)"
+
+    End If
+
+    aux_3 = aux_3 + 1
+ 
+Wend
+ 
+' Excluir a aba "ggscco_4.rpt" se ela existir
+
+    Application.DisplayAlerts = False
+
+    On Error Resume Next
+
+    Worksheets("ggscco_4.rpt").Delete
+
+    On Error GoTo 0
+
+    Application.DisplayAlerts = True
+
+    wb_3.Save
+
+    wb_3.Close
+
+    caminhoArquivo_4 = "R:\Controles Internos\Projeto Liquidez\JC\ggscco_4.xlsx"
+
+    Name caminhoArquivo_4 As "R:\Controles Internos\Projeto Liquidez\JC\deposito a vista.xlsx"
+
+End Sub
